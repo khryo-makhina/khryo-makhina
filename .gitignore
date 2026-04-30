@@ -1,0 +1,27 @@
+﻿# Ignore build artifacts and IDE folders
+**/obj/
+**/bin/
+*.user
+.vs/
+node_modules/
+*.code-workspace
+translations_csv/TextToSpeechApp/Properties/launchSettings.json
+
+# Ignore runtime/persistent data
+# Ignore all files in the ai_offline/ollama_with_open_webui/open_webui_data directory, except for README.md
+ai_offline/ollama_with_open_webui/open_webui_data/*
+!ai_offline/ollama_with_open_webui/open_webui_data/README.md
+# Ignore all files in the local_user_files directory, except for README.md
+local_user_files/*
+!local_user_files/README.md
+
+# Ignore specific temporary files
+temp_task_progress.txt
+launchSettings.json
+
+# Claude Code personal/local files
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/agent-memory-local/
+__pycache__/
+

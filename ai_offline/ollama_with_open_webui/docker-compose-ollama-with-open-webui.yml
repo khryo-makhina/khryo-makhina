@@ -1,0 +1,91 @@
+# Compose stack for Ollama + Open WebUI
+# See README.RUN.md, README.GPU.md, README.CLI.md and README.TROUBLESHOOTING.md for usage and troubleshooting
+
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+      # - ${OLLAMA_MODELS_PATH:-D:/Ollama_models}:/root/.ollama/models
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all  # legacy fallback for older docker-compose / nvidia-docker setups
+      - OLLAMA_NO_VERIFY=true  # For corporate networks/proxies
+      - OLLAMA_KEEP_ALIVE=30m  # Prevent model unloading
+    # Legacy fallback for older docker-compose versions that don't support `device_requests`:
+    # the `runtime: nvidia` key + `NVIDIA_VISIBLE_DEVICES` env var may work if nvidia-container-runtime is installed.
+    # Recommended: upgrade to Docker Compose V2 and use `docker compose` which supports `device_requests`.
+    runtime: nvidia
+    device_requests:
+      - driver: nvidia
+        count: all
+        capabilities: ["gpu"]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]  # More reliable than curl
+    networks:
+      - ai_network
+
+  # To access the open-webui CLI in Docker Desktop:
+  # docker exec -it open-webui bash
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3000:8080"  # Map container port 8080 to host port 3000
+    restart: unless-stopped  # Restart container unless manually stopped
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_SECRET_KEY=your_secure_key_here  # Add security
+    volumes:
+      - open_webui_data:/app/backend/data  # Map to Windows directory for persistent storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Allow container to access host services
+    depends_on:
+      ollama:
+        condition: service_healthy  # Wait for ollama to be healthy before starting open-webui
+    networks:
+      - ai_network
+
+  # Helper service: `ollama-cli` — lightweight helper container that mounts Ollama data/models.
+  # Use to run one-off `ollama` CLI commands or open a shell without affecting the main `ollama` service.
+  # Stays running via `tail -f /dev/null`; use `docker compose run --rm ollama-cli ...` for ephemeral commands.
+  # Helper service for running one-off ollama CLI commands (uses same volumes/devices)
+  ollama-cli:
+    image: ollama/ollama
+    entrypoint: ["tail","-f","/dev/null"]
+    volumes:
+      - ollama_data:/root/.ollama
+      - ${OLLAMA_MODELS_PATH:-D:/Ollama_models}:/root/.ollama/models
+    device_requests:
+      - driver: nvidia
+        count: all
+        capabilities: ["gpu"]
+    networks:
+      - ai_network
+
+  ollama-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.proxy
+    container_name: ollama-proxy
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    networks:
+      - ai_network
+
+networks:
+  ai_network:
+    driver: bridge
+    attachable: true
+
+volumes:
+  ollama_data:
+  open_webui_data:
+

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(dotnet *)",
+      "Bash(powershell *)",
+      "Bash(pwsh *)",
+      "Bash(git *)",
+      "Bash(docker *)",
+      "Bash(docker-compose *)",
+      "Bash(dir)",
+      "Bash(ls *)",
+      "Bash(cd *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(cat *)",
+      "Bash(type *)",
+      "Bash(echo *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(where *)",
+      "Bash(which *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf C:*)",
+      "Bash(format *)",
+      "Bash(del /S /Q C:*)",
+      "Bash(rd /S /Q C:*)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(invoke-webrequest *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(*.secret)",
+      "Read(*.key)",
+      "Read(*appsettings.*.json)"
+    ]
+  },
+  "env": {
+    "OS": "Windows_NT"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-commit-build-check.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -File .claude/hooks/normalize-line-endings.ps1"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-compact.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \".claude/scripts/statusline.js\""
+  },
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
+  },
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest"
+}

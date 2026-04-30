@@ -1,0 +1,33 @@
+# Set default behavior to auto-normalize line endings
+* text=auto
+
+# Explicitly declare text files with CRLF (Windows development)
+*.cs        text eol=crlf
+*.csproj    text eol=crlf
+*.sln       text eol=crlf
+*.json      text eol=crlf
+*.xml       text eol=crlf
+*.config    text eol=crlf
+*.props     text eol=crlf
+*.targets   text eol=crlf
+*.md        text eol=crlf
+*.txt       text eol=crlf
+*.yml       text eol=crlf
+*.yaml      text eol=crlf
+
+# Shell scripts and Docker files MUST use LF (even on Windows)
+*.sh        text eol=lf
+*.bash      text eol=lf
+Dockerfile* text eol=lf
+*.js        text eol=lf
+
+# Declare files that will always be binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.dll       binary
+*.exe       binary
+*.zip       binary
+*.csv       binary
