@@ -1,7 +1,7 @@
 {
   "ApiUrl": "http://localhost:11434/api/generate",
-  "ModelName": "translategemma:12b",
-  "Prompt": "Translate: `{text}`. Source language: English. Target language: Finnish. Use semantic context `{semantics}` when provided to improve accuracy. Return response as a one-liner plain text. If there isn't a direct/accurate enough translation, return `{text}`.",
+  "ModelName": "translategemma-12b-opt",
+  "Prompt": "Translate: `{text}` from English to Finnish. Use semantic context `{semantics}` when provided to improve accuracy. Return response as a one-liner plain text.",
   "KeepAlive": "10m",
   "ModelAliases": {
     "default": "translategemma:12b",
