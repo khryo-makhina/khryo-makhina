@@ -20,16 +20,8 @@ temp_task_progress.txt
 launchSettings.json
 
 # Claude Code personal/local files
-.claude/
-.claudeignore
 CLAUDE.local.md
 .claude/settings.local.json
 .claude/agent-memory-local/
 __pycache__/
 
-
-# Continue Dev personal/local files
-.continue
-
-# Cline personal/local files
-.clinerules
