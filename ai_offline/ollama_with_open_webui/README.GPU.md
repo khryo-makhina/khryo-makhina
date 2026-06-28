@@ -18,9 +18,9 @@ docker exec -it ollama nvidia-smi
 ```
 
 Docker Compose notes
-- Use Docker Compose V2 (`docker compose`) for `device_requests` support (used in the Compose file).
-- Use Docker Compose V2 (`docker compose`) for `device_requests` support (used in the Compose file).
-- If you must use legacy `docker-compose` (or your compose binary rejects `device_requests`), either:
+- Use Docker Compose V2 (`docker compose`) for `deploy.resources.reservations.devices` support (used in the Compose file).
+- Use Docker Compose V2 (`docker compose`) for `deploy.resources.reservations.devices` support (used in the Compose file).
+- If you must use legacy `docker-compose` (or your compose binary rejects `deploy.resources.reservations.devices`), either:
 	- Upgrade to Docker Desktop / Compose V2 and run `docker compose` (recommended), or
 	- Use the fallback in the Compose file: it includes `runtime: nvidia` and an `NVIDIA_VISIBLE_DEVICES=all` env var which may work if `nvidia-container-runtime` is installed on the host.
 

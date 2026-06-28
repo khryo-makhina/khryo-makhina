@@ -17,5 +17,5 @@ docker compose -f docker-compose-ollama-with-open-webui.legacy.yml down -v --rmi
 ```
 
 Compatibility note:
-- Use this legacy file if your `docker compose` rejects `device_requests` (older Compose versions).
-- If you have Docker Compose V2 with `device_requests` support, prefer the modern file (`docker-compose-ollama-with-open-webui.yml`).
+- Use this legacy file if your `docker compose` rejects `deploy.resources.reservations.devices` (older Compose versions).
+- If you have Docker Compose V2 with `deploy.resources.reservations.devices` support, prefer the modern file (`docker-compose-ollama-with-open-webui.yml`).

@@ -11,7 +11,7 @@ Docker Compose stack for running Ollama AI models with Open WebUI frontend. Prov
 - GPU acceleration for Windows/Linux via NVIDIA drivers
 - Customizable model storage path via OLLAMA_MODELS_PATH
 - Legacy Docker Compose file as default (compatible with older versions)
-- Modern Compose file with device_requests for newer Docker versions
+- Modern Compose file with deploy.resources.reservations.devices for newer Docker versions
 - Local build support for custom entrypoint modifications
 - Environment variable configuration for flexible deployment
 

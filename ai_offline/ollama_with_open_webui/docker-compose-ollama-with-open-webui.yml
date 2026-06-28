@@ -14,14 +14,15 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all  # legacy fallback for older docker-compose / nvidia-docker setups
       - OLLAMA_NO_VERIFY=true  # For corporate networks/proxies
       - OLLAMA_KEEP_ALIVE=30m  # Prevent model unloading
-    # Legacy fallback for older docker-compose versions that don't support `device_requests`:
-    # the `runtime: nvidia` key + `NVIDIA_VISIBLE_DEVICES` env var may work if nvidia-container-runtime is installed.
-    # Recommended: upgrade to Docker Compose V2 and use `docker compose` which supports `device_requests`.
-    runtime: nvidia
-    device_requests:
-      - driver: nvidia
-        count: all
-        capabilities: ["gpu"]
+    # GPU support for Docker Compose, per Docker Docs:
+    # https://docs.docker.com/compose/how-tos/gpu-support/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: ["gpu"]
     healthcheck:
       test: ["CMD", "ollama", "list"]  # More reliable than curl
     networks:
@@ -59,10 +60,13 @@ services:
     volumes:
       - ollama_data:/root/.ollama
       - ${OLLAMA_MODELS_PATH:-D:/Ollama_models}:/root/.ollama/models
-    device_requests:
-      - driver: nvidia
-        count: all
-        capabilities: ["gpu"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: ["gpu"]
     networks:
       - ai_network
 

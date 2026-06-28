@@ -13,7 +13,7 @@ docker run --gpus all --rm nvidia/cuda:12.1.0-base-ubuntu22.04 nvidia-smi
  Prerequisites
  - Docker Desktop with WSL2 backend enabled
  - NVIDIA driver for WSL installed (verify with `nvidia-smi` inside your WSL distro)
- - Docker Compose V2 (`docker compose`) recommended (supports `device_requests`)
+ - Docker Compose V2 (`docker compose`) recommended (supports `deploy.resources.reservations.devices`)
  - Optional: `curl` or Postman for HTTP checks
  
  Quick GPU test
@@ -98,28 +98,20 @@ Build from the local `Dockerfile` (recommended if you modify `entrypoint.sh`)
 		 - "11434:11434"
 	 volumes:
 		 - ollama_data:/root/.ollama
-	 device_requests:
-		 - driver: nvidia
-			 count: all
-			 capabilities: ["gpu"]
- 
- ```
- 
- Build & run with local image
- ```powershell
- docker compose -f docker-compose-ollama-with-open-webui.yml build ollama
- docker compose -f docker-compose-ollama-with-open-webui.yml up -d
- # or combine: docker compose -f ... up -d --build
- ```
- 
- Why choose which option
+ 	 deploy:
+ 		 resources:
+ 			 reservations:
+ 				 devices:
+ 					 - driver: nvidia
+ 						 count: all
+ 						 capabilities: ["gpu"]
  - `image:` — fast startup, uses the published `ollama/ollama` image. Good if you don't change the image.
  - `build:` — required if you edit `entrypoint.sh` or other image contents and want those changes used by the container.
  - Hybrid: include both `build:` and `image:` — Compose will build and tag the resulting image with the given name.
  
  GPU notes (Windows / WSL2)
  - Ensure Docker Desktop exposes GPU to WSL and that the WSL distro can run `nvidia-smi`.
- - Compose V2 supports `device_requests`. If using legacy `docker-compose` you may need `docker run --gpus all ...` or upgrade to the newer `docker compose` CLI.
+ - Compose V2 supports `deploy.resources.reservations.devices`. If using legacy `docker-compose` you may need `docker run --gpus all ...` or upgrade to the newer `docker compose` CLI.
  
  Verify Ollama
  ```powershell
@@ -146,7 +138,7 @@ Running a model in Docker container, example: translategemma:12b
  
  Troubleshooting
  - If GPU tests fail: confirm `nvidia-smi` from WSL and that Docker Desktop shows GPU support enabled.
- - If using `docker-compose` (legacy) and `device_requests` is ignored, switch to `docker compose`.
+ - If using `docker-compose` (legacy) and `deploy.resources.reservations.devices` is ignored, switch to `docker compose`.
  - If `ollama` CLI commands fail inside the container, `docker logs ollama` may show startup errors or model download issues.
  
  Security & notes
