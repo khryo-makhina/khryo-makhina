@@ -9,7 +9,7 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-      # - ${OLLAMA_MODELS_PATH:-D:/Ollama_models}:/root/.ollama/models
+      - ${OLLAMA_MODELS_PATH:-D:/Ollama_models}:/root/.ollama/models
     environment:
       - NVIDIA_VISIBLE_DEVICES=all  # legacy fallback for older docker-compose / nvidia-docker setups
       - OLLAMA_NO_VERIFY=true  # For corporate networks/proxies
